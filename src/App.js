@@ -18,6 +18,7 @@ class App extends React.Component {
             isLoading: false,
             errorMessage: '',
             value: '',
+            destinationName: '',
             modal: false,
             error: false,
 
@@ -93,10 +94,10 @@ class App extends React.Component {
                         .then(response => response.json())
                         .then((responseJson) => {
                             let timeToStation = [];
-                            let destinationName = [];
                             for (let i = 0 ; i < responseJson.length; i++){
-                                timeToStation[i] = Math.floor(responseJson[i].timeToStation / 60);
-                                destinationName[i] = responseJson[i].destinationName;
+                                if (responseJson[i].destinationName === this.state.destinationName) {
+                                    timeToStation[timeToStation.length] = Math.floor(responseJson[i].timeToStation / 60);
+                                }
                             }
                             let minTimeToStation = timeToStation[0];
                             let index;
@@ -106,11 +107,8 @@ class App extends React.Component {
                                     index = i;
                                 }
                             }
-                            let minDestinationName = destinationName[index];
-
                             this.setState({
                                 timeToStation: minTimeToStation,
-                                destinationName: minDestinationName,
                                 });
                             this.setState({isLoading: false});
                             this.toggle();
@@ -143,6 +141,12 @@ class App extends React.Component {
                                 <Input type="textArea" name="text" id="exampleText" onChange={(event) => {
                                     this.setState({value: event.target.value})
                                 }} value={this.state.value}/>
+                                <Label for="Text"
+                                       style={{color: 'black'}}>
+                                    <h3>Enter the destination name:</h3></Label>
+                                <Input type="textArea" name="text" id="Text" onChange={(event) => {
+                                    this.setState({destinationName: event.target.value})
+                                }} destinationName={this.state.destinationName}/>
                             </FormGroup>
                             <br/>
                             <Button color="secondary" onClick={e => {
